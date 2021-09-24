@@ -1,0 +1,1 @@
+target_sources(app PRIVATE electricity_reading_service.c price_plan_service.c)

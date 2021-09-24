@@ -1,0 +1,8 @@
+add_subdirectory(hal)
+add_subdirectory(domain)
+add_subdirectory(app)
+add_subdirectory(adapter)
+add_library(meter)
+target_sources(meter PRIVATE meter.c)
+target_link_libraries(meter PRIVATE adapter)
+target_include_directories(meter PUBLIC .)

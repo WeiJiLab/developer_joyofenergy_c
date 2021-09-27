@@ -1,7 +1,3 @@
-//
-// Created by Lijun Lin on 2021/9/1.
-//
-
 #ifndef DEVELOPER_JOYOFENERGY_C_PROTOCOL_H
 #define DEVELOPER_JOYOFENERGY_C_PROTOCOL_H
 
@@ -19,8 +15,8 @@ enum message_type {
 };
 
 struct message_head {
-  size_t size;
-  enum message_type type;
+  uint32_t size;
+  uint32_t type;
   char payload[0];
 };
 

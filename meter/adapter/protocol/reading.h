@@ -1,7 +1,3 @@
-//
-// Created by Lijun Lin on 2021/9/1.
-//
-
 #ifndef DEVELOPER_JOYOFENERGY_C_READING_H
 #define DEVELOPER_JOYOFENERGY_C_READING_H
 
@@ -18,7 +14,7 @@ static inline void readings_controller_init(struct readings_controller* controll
 }
 
 struct reading_message_response {
-  size_t readings_count;
+  uint32_t readings_count;
   struct electricity_reading readings[1000];
 };
 

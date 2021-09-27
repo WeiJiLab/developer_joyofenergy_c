@@ -25,4 +25,6 @@ struct plan_charge {
 
 size_t price_plan_service_compare_all(struct price_plan_service* service, struct plan_charge* results, size_t count);
 
+size_t price_plan_service_recommend(struct price_plan_service* service, struct plan_charge* results, size_t limit);
+
 #endif  // DEVELOPER_JOYOFENERGY_C_PRICE_PLAN_SERVICE_H

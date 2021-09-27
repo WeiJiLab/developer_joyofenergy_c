@@ -27,10 +27,6 @@ bool endpoint_mock_send(struct endpoint_mock* endpoint, const void* data, size_t
   return true;
 }
 
-int endpoint_open(struct endpoint* endpoint) { return 0; }
-
-int endpoint_close(struct endpoint* endpoint) { return 0; }
-
 size_t endpoint_send(struct endpoint* endpoint, const void* data, size_t size) {
   struct endpoint_mock* mock = (struct endpoint_mock*)endpoint;
   size_t capacity = sizeof(mock->out_buffers) / sizeof(mock->out_buffers[0]);

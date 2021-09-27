@@ -27,6 +27,8 @@ static struct message protocol_handle(struct protocol* router, const struct mess
       func = (handle_func)price_plan_controller_compare_all;
       break;
     case MESSAGE_PRICE_PLAN_RECOMMEND:
+      handler = &price_plan;
+      func = (handle_func)price_plan_controller_recommend;
     case MESSAGE_INVALID:
     default:
       break;

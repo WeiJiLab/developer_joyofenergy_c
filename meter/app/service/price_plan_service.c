@@ -1,7 +1,8 @@
 #include "price_plan_service.h"
+#include "configuration.h"
 
 static int calculate_average_reading(struct electricity_reading* readings, size_t readings_count) {
-  int sum = 0;
+  uint32_t sum = 0;
   for (size_t i = 0; i < readings_count; ++i) {
     sum += readings[i].power;
   }
@@ -15,8 +16,8 @@ static time_t calculate_time_elapsed(struct electricity_reading* readings, size_
 }
 
 static int calculate_cost(struct electricity_reading* readings, size_t readings_count, struct price_plan* pricePlan) {
-  double average = calculate_average_reading(readings, readings_count);
-  size_t seconds_elapsed = calculate_time_elapsed(readings, readings_count);
+  int average = calculate_average_reading(readings, readings_count);
+  time_t seconds_elapsed = calculate_time_elapsed(readings, readings_count);
 
   int consumed_watt = average * 3600 / seconds_elapsed;
   int cost_in_cents = consumed_watt * pricePlan->centsPerKWH / 10;
@@ -24,7 +25,7 @@ static int calculate_cost(struct electricity_reading* readings, size_t readings_
 }
 
 size_t price_plan_service_compare_all(struct price_plan_service* service, struct plan_charge* results, size_t count) {
-  struct electricity_reading readings[1024];
+  struct electricity_reading readings[MAX_MESSAGE_READING_PAYLOAD_COUNT];
   size_t readings_count = sizeof(readings) / sizeof(readings[0]);
   readings_count = electricity_reading_service_get(service->reading_service, readings, readings_count);
 
@@ -46,7 +47,7 @@ int compare_charge(const void* a, const void* b) {
 }
 
 size_t price_plan_service_recommend(struct price_plan_service* service, struct plan_charge* results, size_t limit) {
-  struct electricity_reading readings[1024];
+  struct electricity_reading readings[MAX_MESSAGE_READING_PAYLOAD_COUNT];
   size_t readings_count = sizeof(readings) / sizeof(readings[0]);
   readings_count = electricity_reading_service_get(service->reading_service, readings, readings_count);
 

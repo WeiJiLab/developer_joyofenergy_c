@@ -6,7 +6,7 @@
 struct message reading_read(struct readings_controller* controller, const struct message* request) {
   struct message response;
   if (request->head.type == MESSAGE_READINGS_READ) {
-    struct electricity_reading readings[1024];
+    struct electricity_reading readings[MAX_MESSAGE_READING_PAYLOAD_COUNT];
     size_t expected_count = sizeof(readings) / sizeof(readings[0]);
     size_t actual_count = electricity_reading_service_get(controller->service, readings, expected_count);
     response.head.type = MESSAGE_READINGS_READ;

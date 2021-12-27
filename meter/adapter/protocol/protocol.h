@@ -4,6 +4,7 @@
 #include <app/service/electricity_reading_service.h>
 #include <hal/endpoint.h>
 #include <stdbool.h>
+#include <configuration.h>
 
 #include "price_plan.h"
 
@@ -22,7 +23,7 @@ struct message_head {
 
 struct message {
   struct message_head head;
-  char payload[1024];
+  char payload[MAX_MESSAGE_READING_PAYLOAD_COUNT];
 };
 
 struct protocol {

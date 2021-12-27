@@ -23,7 +23,7 @@ static inline size_t electricity_reading_service_get(struct electricity_reading_
   if (copy_count > 0) {
     memcpy(reading, service->readings, sizeof(struct electricity_reading) * copy_count);
   }
-  return service->count;
+  return copy_count;
 }
 
 static inline void electricity_reading_service_store(struct electricity_reading_service* service) {

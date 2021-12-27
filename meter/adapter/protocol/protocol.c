@@ -37,7 +37,7 @@ static struct message protocol_handle(struct protocol* router, const struct mess
 }
 
 bool protocol_process(struct protocol* protocol, struct endpoint* endpoint) {
-  char buffer[1024];
+  char buffer[MAX_MESSAGE_READING_PAYLOAD_COUNT];
   int rec = endpoint_receive(endpoint, buffer, sizeof(buffer));
   if (rec == 0) {
     return true;

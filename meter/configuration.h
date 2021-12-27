@@ -11,7 +11,12 @@
 #define RENEWABLES_PRICE_PLAN_ID "price-plan-1"
 #define STANDARD_PRICE_PLAN_ID "price-plan-2"
 
-size_t price_plans(struct price_plan* plans, size_t count) {
+// default schedule process cycle time
+#define DEFAULT_SCHEDULE_CYCLE_TIME_MINUTE  60 * 15
+// default max message reading payload count
+#define MAX_MESSAGE_READING_PAYLOAD_COUNT 1024
+
+static inline size_t price_plans(struct price_plan* plans, size_t count) {
   assert(count >= 3);
   strcpy(plans[0].name, MOST_EVIL_PRICE_PLAN_ID);
   strcpy(plans[0].supplier, DR_EVILS_DARK_ENERGY_ENERGY_SUPPLIER);

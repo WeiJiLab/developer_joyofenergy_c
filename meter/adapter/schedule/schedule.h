@@ -3,6 +3,7 @@
 #include <app/service/electricity_reading_service.h>
 #include <hal/bsp.h>
 #include <hal/clock.h>
+#include "configuration.h"
 
 struct schedule {
   struct electricity_reading_service* reading_service;
@@ -20,7 +21,7 @@ static inline bool schedule_process(struct schedule* schedule) {
   time_t now = clock_now(bsp_clock(schedule->bsp));
   time_t elapsed = now - schedule->last_time;
   schedule->last_time = now;
-  if (elapsed == 60 * 15) {
+  if (elapsed >= DEFAULT_SCHEDULE_CYCLE_TIME_MINUTE) {
     electricity_reading_service_store(schedule->reading_service);
   }
   return true;

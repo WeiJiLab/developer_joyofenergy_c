@@ -5,26 +5,8 @@
 #include <hal/endpoint.h>
 #include <stdbool.h>
 #include <configuration.h>
-
+#include "message.h"
 #include "price_plan.h"
-
-enum message_type {
-  MESSAGE_INVALID = 0,
-  MESSAGE_READINGS_READ,
-  MESSAGE_PRICE_PLAN_COMPARE_ALL,
-  MESSAGE_PRICE_PLAN_RECOMMEND,
-};
-
-struct message_head {
-  uint32_t size;
-  uint32_t type;
-  char payload[0];
-};
-
-struct message {
-  struct message_head head;
-  char payload[MAX_MESSAGE_READING_PAYLOAD_COUNT];
-};
 
 struct protocol {
   struct electricity_reading_service* reading_service;

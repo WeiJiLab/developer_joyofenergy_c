@@ -2,17 +2,17 @@
 
 #include "reading.h"
 
-struct message default_handle(struct protocol* controller, const struct message* request) {
-  struct message message = {0};
+message default_handle(struct protocol* controller, const message* request) {
+  message message = {0};
   return message;
 }
 
-typedef struct message (*handle_func)(void* controller, const struct message* request);
+typedef message (*handle_func)(void* controller, const message* request);
 
-static struct message protocol_handle(struct protocol* router, const struct message* request) {
-  struct readings_controller readings;
+static message protocol_handle(struct protocol* router, const message* request) {
+  readings_controller readings;
   readings_controller_init(&readings, router->reading_service);
-  struct price_plan_controller price_plan;
+  price_plan_controller price_plan;
   price_plan_controller_init(&price_plan, router->plan_service);
 
   void* handler = router;
@@ -42,8 +42,8 @@ bool protocol_process(struct protocol* protocol, struct endpoint* endpoint) {
   if (rec == 0) {
     return true;
   }
-  struct message* request = (struct message*)buffer;
-  struct message response = protocol_handle(protocol, request);
+  message* request = (message*)buffer;
+  message response = protocol_handle(protocol, request);
   endpoint_send(endpoint, &response, sizeof(response));
   return false;
 }

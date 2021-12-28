@@ -6,12 +6,12 @@
 
 struct price_plan_service {
   struct electricity_reading_service* reading_service;
-  struct price_plan* plans;
+  price_plan* plans;
   size_t plans_count;
 };
 
 static inline void price_plan_service_init(struct price_plan_service* service,
-                                           struct electricity_reading_service* reading_service, struct price_plan* plans,
+                                           struct electricity_reading_service* reading_service, price_plan* plans,
                                            size_t plans_count) {
   service->reading_service = reading_service;
   service->plans = plans;

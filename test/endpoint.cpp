@@ -5,8 +5,8 @@
 
 #include "meter.h"
 
-struct message make_request(message_type requestType) {
-  struct message req = {0};
+message make_request(message_type requestType) {
+  message req = {0};
   req.head.size = sizeof(req);
   req.head.type = requestType;
   return req;
@@ -17,14 +17,14 @@ TEST(EndpointTest, ShouldReadReading) {
   bsp_mock_init(&mock);
   struct meter meter;
   meter_init(&meter, (struct bsp *)&mock);
-  struct message request = make_request(MESSAGE_READINGS_READ);
+  message request = make_request(MESSAGE_READINGS_READ);
   endpoint_mock_send(&mock.endpoint, &request, sizeof(request));
 
   meter_process(&meter);
 
   const struct buffer received = endpoint_mock_receive(&mock.endpoint);
   ASSERT_GT(received.size, 0);
-  struct message *response = (struct message *)received.data;
+  message *response = (message *)received.data;
   ASSERT_EQ(response->head.type, MESSAGE_READINGS_READ);
   ASSERT_GT(response->head.size, sizeof(response->head));
   struct reading_message_response *data = (struct reading_message_response *)response->payload;
@@ -43,12 +43,12 @@ TEST(EndpointTest, ShouldStoreReadingAfter15Minutes) {
 
   meter_process(&meter);
 
-  struct message request = make_request(MESSAGE_READINGS_READ);
+  message request = make_request(MESSAGE_READINGS_READ);
   endpoint_mock_send(&mock.endpoint, &request, sizeof(request));
   meter_process(&meter);
   const struct buffer received = endpoint_mock_receive(&mock.endpoint);
   ASSERT_GT(received.size, 0);
-  struct message *response = (struct message *)received.data;
+  message *response = (message *)received.data;
   struct reading_message_response *data = (struct reading_message_response *)response->payload;
   ASSERT_EQ(data->readings_count, 22);
   ASSERT_EQ(data->readings[21].power, power);
@@ -60,16 +60,16 @@ TEST(EndpointTest, ShouldCompareAllPricePlan) {
   bsp_mock_init(&mock);
   struct meter meter;
   meter_init(&meter, (struct bsp *)&mock);
-  struct message request = make_request(MESSAGE_PRICE_PLAN_COMPARE_ALL);
+  message request = make_request(MESSAGE_PRICE_PLAN_COMPARE_ALL);
   endpoint_mock_send(&mock.endpoint, &request, sizeof(request));
 
   meter_process(&meter);
 
   const struct buffer received = endpoint_mock_receive(&mock.endpoint);
   ASSERT_GT(received.size, 0);
-  struct message *response = (struct message *)received.data;
+  message *response = (message *)received.data;
   ASSERT_EQ(response->head.type, MESSAGE_PRICE_PLAN_COMPARE_ALL);
-  struct price_plan_compare_all_response *data = (struct price_plan_compare_all_response *)response->payload;
+  price_plan_compare_all_response *data = (price_plan_compare_all_response *)response->payload;
   ASSERT_EQ(data->plans_count, 3);
   ASSERT_STREQ(data->plans[0].plan, "price-plan-0");
   ASSERT_EQ(data->plans[0].charge, 40 * 100);
@@ -80,8 +80,8 @@ TEST(EndpointTest, ShouldRecommendPricePlan) {
   bsp_mock_init(&mock);
   struct meter meter;
   meter_init(&meter, (struct bsp *)&mock);
-  struct message request = make_request(MESSAGE_PRICE_PLAN_RECOMMEND);
-  struct price_plan_recommend_request *recommend_request = (struct price_plan_recommend_request *)request.payload;
+  message request = make_request(MESSAGE_PRICE_PLAN_RECOMMEND);
+  price_plan_recommend_request *recommend_request = (price_plan_recommend_request *)request.payload;
   recommend_request->limit = 2;
   endpoint_mock_send(&mock.endpoint, &request, sizeof(request));
 
@@ -89,9 +89,9 @@ TEST(EndpointTest, ShouldRecommendPricePlan) {
 
   const struct buffer received = endpoint_mock_receive(&mock.endpoint);
   ASSERT_GT(received.size, 0);
-  struct message *response = (struct message *)received.data;
+  message *response = (message *)received.data;
   ASSERT_EQ(response->head.type, MESSAGE_PRICE_PLAN_RECOMMEND);
-  struct price_plan_recommend_response *data = (struct price_plan_recommend_response *)response->payload;
+  price_plan_recommend_response *data = (price_plan_recommend_response *)response->payload;
   ASSERT_EQ(data->plans_count, recommend_request->limit);
   ASSERT_STREQ(data->plans[0].plan, "price-plan-2");
   ASSERT_EQ(data->plans[0].charge, 4 * 100);

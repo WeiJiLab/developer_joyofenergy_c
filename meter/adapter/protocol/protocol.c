@@ -36,14 +36,15 @@ static message protocol_handle(struct protocol* router, const message* request) 
   return func(handler, request);
 }
 
-bool protocol_process(struct protocol* protocol, struct endpoint* endpoint) {
-  char buffer[MAX_MESSAGE_READING_PAYLOAD_COUNT];
-  int rec = endpoint_receive(endpoint, buffer, sizeof(buffer));
-  if (rec == 0) {
+bool protocol_process(struct protocol* protocol) {
+  struct message msg;
+
+  int ret = slave_receive_message(&msg);
+  if (0 != ret) {
     return true;
   }
-  message* request = (message*)buffer;
-  message response = protocol_handle(protocol, request);
-  endpoint_send(endpoint, &response, sizeof(response));
+
+  struct message response = protocol_handle(protocol, &msg);
+  slave_send_message(&response);
   return false;
 }

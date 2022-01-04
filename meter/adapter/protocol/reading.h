@@ -1,7 +1,6 @@
 #ifndef DEVELOPER_JOYOFENERGY_C_READING_H
 #define DEVELOPER_JOYOFENERGY_C_READING_H
 
-#include <hal/endpoint.h>
 #include <domain/electricity_reading.h>
 #include <configuration.h>
 #include "adapter/protocol/protocol.h"

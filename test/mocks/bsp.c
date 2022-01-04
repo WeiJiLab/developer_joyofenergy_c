@@ -8,10 +8,6 @@ struct clock* bsp_clock(struct bsp* bsp) {
   return (struct clock*)&mock(bsp)->clock;
 }
 
-struct endpoint* bsp_endpoint(struct bsp* bsp) {
-  return (struct endpoint*)&mock(bsp)->endpoint;
-}
-
 struct metrology* bsp_metrology(struct bsp* bsp) {
   return (struct metrology*)&mock(bsp)->metrology;
 }

@@ -2,10 +2,10 @@
 #define DEVELOPER_JOYOFENERGY_C_PROTOCOL_H
 
 #include <app/service/electricity_reading_service.h>
-#include <hal/endpoint.h>
 #include <stdbool.h>
 #include <configuration.h>
 #include "message.h"
+#include "endpoint.h"
 #include "price_plan.h"
 
 struct protocol {
@@ -19,5 +19,5 @@ static inline void protocol_init(struct protocol* router, struct electricity_rea
   router->plan_service = plan_service;
 }
 
-bool protocol_process(struct protocol* protocol, struct endpoint* endpoint);
+bool protocol_process(struct protocol* protocol);
 #endif  // DEVELOPER_JOYOFENERGY_C_PROTOCOL_H

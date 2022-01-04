@@ -7,7 +7,7 @@ typedef struct {
   struct price_plan_service* service;
 } price_plan_controller;
 
-typedef struct {
+typedef struct price_plan_compare_all_response {
   uint32_t plans_count;
   struct {
     char plan[256];
@@ -15,11 +15,11 @@ typedef struct {
   } plans[5];
 } price_plan_compare_all_response;
 
-typedef struct {
+typedef struct price_plan_recommend_request {
   uint32_t limit;
 } price_plan_recommend_request;
 
-typedef struct {
+typedef struct price_plan_recommend_response {
   uint32_t plans_count;
   struct {
     char plan[256];

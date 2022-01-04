@@ -26,6 +26,7 @@ struct meter {
 
 int meter_init(struct meter* meter, struct bsp* bsp);
 bool meter_process(struct meter* meter);
+void device_interrupt_proc(uint32_t id);
 
 #ifdef __cplusplus
 }

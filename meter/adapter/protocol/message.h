@@ -12,12 +12,13 @@ enum message_type {
 };
 
 struct message_head {
+  uint32_t meter_id;
   uint32_t size;
   uint32_t type;
   char payload[0];
 };
 
-typedef struct {
+typedef struct message {
   struct message_head head;
   char payload[MAX_MESSAGE_READING_PAYLOAD_COUNT];
 } message;

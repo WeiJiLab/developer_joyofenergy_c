@@ -17,14 +17,12 @@ TEST(EndpointTest, ShouldReadReading) {
   bsp_mock_init(&mock);
   struct meter meter;
   meter_init(&meter, (struct bsp *)&mock);
-  message request = make_request(MESSAGE_READINGS_READ);
-  endpoint_mock_send(&mock.endpoint, &request, sizeof(request));
 
-  meter_process(&meter);
+  struct message msg = make_request(MESSAGE_READINGS_READ);
+  master_send_message(&msg);
 
-  const struct buffer received = endpoint_mock_receive(&mock.endpoint);
-  ASSERT_GT(received.size, 0);
-  message *response = (message *)received.data;
+  struct message *response = &msg;
+  master_receive_message(response);
   ASSERT_EQ(response->head.type, MESSAGE_READINGS_READ);
   ASSERT_GT(response->head.size, sizeof(response->head));
   struct reading_message_response *data = (struct reading_message_response *)response->payload;
@@ -41,14 +39,11 @@ TEST(EndpointTest, ShouldStoreReadingAfter15Minutes) {
   const int power = 5000;
   metrology_mock_set_power(&mock.metrology, power);
 
-  meter_process(&meter);
+  struct message msg = make_request(MESSAGE_READINGS_READ);
+  master_send_message(&msg);
 
-  message request = make_request(MESSAGE_READINGS_READ);
-  endpoint_mock_send(&mock.endpoint, &request, sizeof(request));
-  meter_process(&meter);
-  const struct buffer received = endpoint_mock_receive(&mock.endpoint);
-  ASSERT_GT(received.size, 0);
-  message *response = (message *)received.data;
+  struct message *response = &msg;
+  master_receive_message(&msg);
   struct reading_message_response *data = (struct reading_message_response *)response->payload;
   ASSERT_EQ(data->readings_count, 22);
   ASSERT_EQ(data->readings[21].power, power);
@@ -60,14 +55,12 @@ TEST(EndpointTest, ShouldCompareAllPricePlan) {
   bsp_mock_init(&mock);
   struct meter meter;
   meter_init(&meter, (struct bsp *)&mock);
-  message request = make_request(MESSAGE_PRICE_PLAN_COMPARE_ALL);
-  endpoint_mock_send(&mock.endpoint, &request, sizeof(request));
 
-  meter_process(&meter);
+  struct message msg = make_request(MESSAGE_PRICE_PLAN_COMPARE_ALL);
+  master_send_message(&msg);
 
-  const struct buffer received = endpoint_mock_receive(&mock.endpoint);
-  ASSERT_GT(received.size, 0);
-  message *response = (message *)received.data;
+  struct message *response = &msg;
+  master_receive_message(response);
   ASSERT_EQ(response->head.type, MESSAGE_PRICE_PLAN_COMPARE_ALL);
   price_plan_compare_all_response *data = (price_plan_compare_all_response *)response->payload;
   ASSERT_EQ(data->plans_count, 3);
@@ -80,16 +73,14 @@ TEST(EndpointTest, ShouldRecommendPricePlan) {
   bsp_mock_init(&mock);
   struct meter meter;
   meter_init(&meter, (struct bsp *)&mock);
-  message request = make_request(MESSAGE_PRICE_PLAN_RECOMMEND);
-  price_plan_recommend_request *recommend_request = (price_plan_recommend_request *)request.payload;
+
+  struct message msg = make_request(MESSAGE_PRICE_PLAN_RECOMMEND);
+  struct price_plan_recommend_request *recommend_request = (struct price_plan_recommend_request *) msg.payload;
   recommend_request->limit = 2;
-  endpoint_mock_send(&mock.endpoint, &request, sizeof(request));
+  master_send_message(&msg);
 
-  meter_process(&meter);
-
-  const struct buffer received = endpoint_mock_receive(&mock.endpoint);
-  ASSERT_GT(received.size, 0);
-  message *response = (message *)received.data;
+  struct message *response = &msg;
+  master_receive_message(response);
   ASSERT_EQ(response->head.type, MESSAGE_PRICE_PLAN_RECOMMEND);
   price_plan_recommend_response *data = (price_plan_recommend_response *)response->payload;
   ASSERT_EQ(data->plans_count, recommend_request->limit);

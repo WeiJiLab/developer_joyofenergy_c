@@ -4,8 +4,8 @@
 #include <app/service/electricity_reading_service.h>
 #include <stdbool.h>
 #include <configuration.h>
-#include "message.h"
-#include "endpoint.h"
+#include <hal/message.h>
+#include <hal/endpoint.h>
 #include "price_plan.h"
 
 struct protocol {

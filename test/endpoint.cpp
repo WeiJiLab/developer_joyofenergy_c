@@ -5,6 +5,18 @@
 
 #include "meter.h"
 
+class EndpointTest : public ::testing::Test {
+ public:
+  EndpointTest() {}
+  void TearDown() {  }
+  void SetUp() {
+    bsp_mock_init(&mock);
+    meter_init(&meter, (struct bsp *)&mock);
+  }
+  struct bsp_mock mock;
+  struct meter meter;
+};
+
 message make_request(message_type requestType) {
   message req = {0};
   req.head.size = sizeof(req);
@@ -12,12 +24,7 @@ message make_request(message_type requestType) {
   return req;
 }
 
-TEST(EndpointTest, ShouldReadReading) {
-  struct bsp_mock mock;
-  bsp_mock_init(&mock);
-  struct meter meter;
-  meter_init(&meter, (struct bsp *)&mock);
-
+TEST_F(EndpointTest, ShouldReadReading) {
   struct message msg = make_request(MESSAGE_READINGS_READ);
   master_send_message(&msg);
 
@@ -30,11 +37,7 @@ TEST(EndpointTest, ShouldReadReading) {
   ASSERT_EQ(data->readings[0].power, 4000);
 }
 
-TEST(EndpointTest, ShouldStoreReadingAfter15Minutes) {
-  struct bsp_mock mock;
-  bsp_mock_init(&mock);
-  struct meter meter;
-  meter_init(&meter, (struct bsp *)&mock);
+TEST_F(EndpointTest, ShouldStoreReadingAfter15Minutes) {
   clock_forward_minutes(&mock.clock, 15);
   const int power = 5000;
   metrology_mock_set_power(&mock.metrology, power);
@@ -50,12 +53,7 @@ TEST(EndpointTest, ShouldStoreReadingAfter15Minutes) {
   ASSERT_EQ(data->readings[21].at, mock.clock.now);
 }
 
-TEST(EndpointTest, ShouldCompareAllPricePlan) {
-  struct bsp_mock mock;
-  bsp_mock_init(&mock);
-  struct meter meter;
-  meter_init(&meter, (struct bsp *)&mock);
-
+TEST_F(EndpointTest, ShouldCompareAllPricePlan) {
   struct message msg = make_request(MESSAGE_PRICE_PLAN_COMPARE_ALL);
   master_send_message(&msg);
 
@@ -68,12 +66,7 @@ TEST(EndpointTest, ShouldCompareAllPricePlan) {
   ASSERT_EQ(data->plans[0].charge, 40 * 100);
 }
 
-TEST(EndpointTest, ShouldRecommendPricePlan) {
-  struct bsp_mock mock;
-  bsp_mock_init(&mock);
-  struct meter meter;
-  meter_init(&meter, (struct bsp *)&mock);
-
+TEST_F(EndpointTest, ShouldRecommendPricePlan) {
   struct message msg = make_request(MESSAGE_PRICE_PLAN_RECOMMEND);
   struct price_plan_recommend_request *recommend_request = (struct price_plan_recommend_request *) msg.payload;
   recommend_request->limit = 2;

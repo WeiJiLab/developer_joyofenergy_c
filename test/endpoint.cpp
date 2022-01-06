@@ -5,20 +5,48 @@
 
 #include "meter.h"
 
+#define METER_ID_0 "smart-meter-0"
+#define METER_ID_1 "smart-meter-1"
+#define METER_ID_2 "smart-meter-2"
+#define METER_ID_3 "smart-meter-3"
+#define METER_ID_4 "smart-meter-4"
+
 class EndpointTest : public ::testing::Test {
  public:
   EndpointTest() {}
-  void TearDown() {  }
+  void TearDown() {
+    destroy_meter(METER_ID_0);
+    destroy_meter(METER_ID_1);
+    destroy_meter(METER_ID_2);
+    destroy_meter(METER_ID_3);
+    destroy_meter(METER_ID_4);
+  }
   void SetUp() {
     bsp_mock_init(&mock);
-    meter_init(&meter, (struct bsp *)&mock);
+    meter_0 = create_meter(METER_ID_0, (struct bsp *) &mock);
+    assert(meter_0 != NULL);
+    meter_1 = create_meter(METER_ID_1, (struct bsp *) &mock);
+    assert(meter_1 != NULL);
+    meter_2 = create_meter(METER_ID_2, (struct bsp *) &mock);
+    assert(meter_2 != NULL);
+    meter_3 = create_meter(METER_ID_3, (struct bsp *) &mock);
+    assert(meter_3 != NULL);
+    meter_4 = create_meter(METER_ID_4, (struct bsp *) &mock);
+    assert(meter_4 != NULL);
   }
-  struct bsp_mock mock;
-  struct meter meter;
+
+    struct bsp_mock mock;
+  private:
+    struct meter *meter_0 = NULL;
+    struct meter *meter_1 = NULL;
+    struct meter *meter_2 = NULL;
+    struct meter *meter_3 = NULL;
+    struct meter *meter_4 = NULL;
 };
 
 message make_request(message_type requestType) {
   message req = {0};
+  memcpy(req.head.meter_id, METER_ID_3, METER_ID_LEN);
   req.head.size = sizeof(req);
   req.head.type = requestType;
   return req;

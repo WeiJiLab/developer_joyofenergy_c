@@ -11,8 +11,10 @@ enum message_type {
   MESSAGE_PRICE_PLAN_RECOMMEND,
 };
 
+#define METER_ID_LEN 0x10
+
 struct message_head {
-  uint32_t meter_id;
+  char meter_id[METER_ID_LEN];
   uint32_t size;
   uint32_t type;
   char payload[0];

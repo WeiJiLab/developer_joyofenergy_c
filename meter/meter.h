@@ -13,7 +13,8 @@ extern "C" {
 #endif
 
 struct meter {
-  struct bsp* bsp;
+  char meter_id[METER_ID_LEN];
+  struct bsp *bsp;
   struct electricity_reading readings[MAX_MESSAGE_READING_PAYLOAD_COUNT];
   size_t readings_count;
   price_plan plans[5];
@@ -24,9 +25,10 @@ struct meter {
   struct protocol protocol;
 };
 
-int meter_init(struct meter* meter, struct bsp* bsp);
-bool meter_process(struct meter* meter);
-void device_interrupt_proc(uint32_t id);
+struct meter *create_meter(const char *meter_id, struct bsp *bsp);
+void destroy_meter(const char *meter_id);
+
+void device_interrupt_proc(char *meter_id);
 
 #ifdef __cplusplus
 }

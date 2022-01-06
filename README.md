@@ -40,6 +40,21 @@ The wall you will be working from today has 7 columns:
 Examples can be found
 here [https://leankit.com/learn/kanban/kanban-board/](https://leankit.com/learn/kanban/kanban-board/)
 
+## Users
+
+To trial the new JOI software 5 people from the JOI accounts team have agreed to test the service and share their energy
+data.
+
+| User    | Smart Meter ID  | Power Supplier        |
+| ------- | --------------- | --------------------- |
+| Sarah   | `smart-meter-0` | Dr Evil's Dark Energy |
+| Peter   | `smart-meter-1` | The Green Eco         |
+| Charlie | `smart-meter-2` | Dr Evil's Dark Energy |
+| Andrea  | `smart-meter-3` | Power for Everyone    |
+| Alex    | `smart-meter-4` | The Green Eco         |
+
+These values are used in the code and in the following examples too.
+
 ## Requirements
 
 The project requires Cmake 3.21 or
@@ -83,6 +98,9 @@ follows format:
 ```
 | byte 1 | byte 2 | byte 3 | byte 4 | byte 5 | byte 6 | byte 7 | byte 8 |
 | ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ |
+|                                meter                                  |
+|                                 id                                    |
+| ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ |
 |               length              |              command              |
 | ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ |
 |                                payload...                             |
@@ -94,10 +112,13 @@ There no API to trigger a reading storing, smart meter will store a new reading 
 
 ### Get Stored Readings
 
-Reading command 
+Reading command
 
 ```
 | byte 1 | byte 2 | byte 3 | byte 4 | byte 5 | byte 6 | byte 7 | byte 8 |
+| ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ |
+|                                meter                                  |
+|                                 id                                    |
 | ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ |
 |               length              |              command              |
 | ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ |
@@ -105,7 +126,7 @@ Reading command
 
 Command is: MESSAGE_READINGS_READ
 
-Response comes with the same message head, but with payload which is defined by `struct reading_message_response` 
+Response comes with the same message head, but with payload which is defined by `struct reading_message_response`
 in `meter/adapter/protocol/reading.h`.
 
 ### View Current Price Plan and Compare Usage Cost Against all Price Plans
@@ -114,6 +135,9 @@ Price plan compare command:
 
 ```
 | byte 1 | byte 2 | byte 3 | byte 4 | byte 5 | byte 6 | byte 7 | byte 8 |
+| ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ |
+|                                meter                                  |
+|                                 id                                    |
 | ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ |
 |               length              |              command              |
 | ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ |
@@ -131,9 +155,12 @@ Price plan recommend command:
 ```
 | byte 1 | byte 2 | byte 3 | byte 4 | byte 5 | byte 6 | byte 7 | byte 8 |
 | ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ |
+|                                meter                                  |
+|                                 id                                    |
+| ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ |
 |               length              |              command              |
 | ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ |
-|               limit               | 
+|               limit               |
 | ------ | ------ | ------ | ------ |
 ```
 

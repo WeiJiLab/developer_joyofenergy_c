@@ -6,7 +6,7 @@
 
 struct bsp;
 
-struct clock* bsp_clock(struct bsp*);
-struct metrology* bsp_metrology(struct bsp*);
+struct clock *bsp_clock(struct bsp *);
+struct metrology *bsp_metrology(struct bsp *);
 
 #endif  // DEVELOPER_JOYOFENERGY_C_BSP_H

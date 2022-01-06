@@ -6,13 +6,14 @@
 #include "metrology.h"
 
 struct bsp_mock {
-  struct clock_mock clock;
-  struct metrology_mock metrology;
+    struct clock_mock clock;
+    struct metrology_mock metrology;
 };
 
-void bsp_mock_init(struct bsp_mock* mock) {
-  clock_mock_init(&mock->clock);
-  metrology_mock_init(&mock->metrology);
+void bsp_mock_init(struct bsp_mock *mock)
+{
+    clock_mock_init(&mock->clock);
+    metrology_mock_init(&mock->metrology);
 }
 
 #endif  // DEVELOPER_JOYOFENERGY_C_MOCK_BSP_H

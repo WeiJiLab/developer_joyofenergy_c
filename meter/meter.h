@@ -13,16 +13,16 @@ extern "C" {
 #endif
 
 struct meter {
-  char meter_id[METER_ID_LEN];
-  struct bsp *bsp;
-  struct electricity_reading readings[MAX_MESSAGE_READING_PAYLOAD_COUNT];
-  size_t readings_count;
-  price_plan plans[5];
-  size_t plans_count;
-  struct electricity_reading_service reading_service;
-  struct price_plan_service price_plan_service;
-  struct schedule schedule;
-  struct protocol protocol;
+    char meter_id[METER_ID_LEN];
+    struct bsp *bsp;
+    struct electricity_reading readings[MAX_MESSAGE_READING_PAYLOAD_COUNT];
+    size_t readings_count;
+    struct price_plan plans[5];
+    size_t plans_count;
+    struct electricity_reading_service reading_service;
+    struct price_plan_service price_plan_service;
+    struct schedule schedule;
+    struct protocol protocol;
 };
 
 struct meter *create_meter(const char *meter_id, struct bsp *bsp);

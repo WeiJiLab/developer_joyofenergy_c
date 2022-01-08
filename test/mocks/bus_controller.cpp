@@ -60,8 +60,6 @@ class bus_controller {
 
   private:
     void bus_dispatch_to_slave_entity(void) {
-        uint32_t i;
-        uint32_t count = 0;
         struct message *msg;
         struct iterator *iter;
 
@@ -70,7 +68,7 @@ class bus_controller {
             std::unique_lock<std::mutex> sem(m2smtx);
             /* 1. producer & consumer sequence
                2. spurious wakeups  */
-            while ((count = queue_size(m2s_queue)) <= 0) {
+            while (queue_size(m2s_queue) <= 0) {
                 m2scv.wait(sem);
             }
             iter = bus_message_queue_iterator(m2s_queue);

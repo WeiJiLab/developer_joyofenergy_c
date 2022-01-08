@@ -8,7 +8,6 @@
 extern "C" {
 #endif
 
-struct iterator;
 typedef void *(*iterator_next)(void *);
 
 struct iterator {

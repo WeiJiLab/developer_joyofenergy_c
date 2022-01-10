@@ -9,13 +9,15 @@ struct bus_message_queue *create_bus_message_queue(uint32_t size)
         return NULL;
     }
 
-    struct bus_message_queue *queue = (struct bus_message_queue *)malloc(sizeof(struct bus_message_queue));
-    queue->message = (struct message *)malloc(size * sizeof(struct message));
-    queue->read_index = 0;
-    queue->write_index = 0;
-    queue->is_roll = false;
-    queue->size = size;
-    queue->iter.next = NULL;
+    struct bus_message_queue *queue = (struct bus_message_queue *) malloc(sizeof(struct bus_message_queue));
+    if (queue) {
+        queue->message = (struct message *) malloc(size * sizeof(struct message));
+        queue->read_index = 0;
+        queue->write_index = 0;
+        queue->is_roll = false;
+        queue->size = size;
+        queue->iter.next = NULL;
+    }
     return queue;
 }
 
@@ -55,13 +57,14 @@ bool queue_pop(struct bus_message_queue *queue, struct message *message)
 
 void destory_bus_message_queue(struct bus_message_queue *queue)
 {
-    if ((queue == NULL) || (queue->message== NULL))
-        return;
-    
-    free(queue->message);
-    free(queue);
-    queue->message= NULL;
-    queue = NULL;
+    if (queue) {
+        if (queue->message) {
+            free(queue->message);
+        }
+        free(queue);
+        queue->message= NULL;
+        queue = NULL;
+    }
 }
 
 uint32_t queue_size(struct bus_message_queue *queue)
@@ -91,7 +94,7 @@ void *bus_message_queue_next(void *data)
     if (data == NULL) {
         return NULL;
     }
-    queue = (struct bus_message_queue *)data;
+    queue = (struct bus_message_queue *) data;
     if (queue->is_roll) {
         if ((queue->read_index + queue->iter.index) >= queue->size) {
             read_pos = (queue->read_index + queue->iter.index - queue->size);

@@ -13,7 +13,9 @@ class bus_controller {
   public:
     bus_controller() {
         m2s_queue = create_bus_message_queue(BC_MSG_CNT);
+        assert(NULL != m2s_queue);
         s2m_queue = create_bus_message_queue(BC_MSG_CNT);
+        assert(NULL != s2m_queue);
         task = std::thread(&bus_controller::bus_dispatch_to_slave_entity, this);
         task.detach();
     }
@@ -22,7 +24,7 @@ class bus_controller {
         destory_bus_message_queue(m2s_queue);
         destory_bus_message_queue(s2m_queue);
     }
-   
+
     static bus_controller *get_instance() {
         static bus_controller bc;
         return &bc;
@@ -72,7 +74,7 @@ class bus_controller {
                 m2scv.wait(sem);
             }
             iter = bus_message_queue_iterator(m2s_queue);
-            while ((msg = (struct message *)iter->next((void *)m2s_queue)) != NULL) {
+            while ((msg = (struct message *) iter->next((void *) m2s_queue)) != NULL) {
                 device_interrupt_proc(msg->head.meter_id);
             }
         }

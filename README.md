@@ -73,7 +73,6 @@ Compiles the project, runs the test and then creates an executable file.
 
 ```shell
 $ mkdir build && cd build
-$ conan install .. --build missing
 $ cmake .. -DCMAKE_BUILD_TYPE=Release
 $ cmake --build . -j --config Release
 ```

@@ -63,7 +63,11 @@ size_t price_plan_service_recommend(struct price_plan_service *service, struct p
         return 0;
     }
 
-    struct plan_charge charges[service->plans_count];
+    struct plan_charge *charges;
+    charges = malloc(service->plans_count * sizeof(struct plan_charge));
+    if (NULL == charges) {
+        return 0;
+    }
     for (size_t i = 0; i < service->plans_count; ++i) {
         charges[i].plan = service->plans[i].name;
         charges[i].charge = calculate_cost(readings, readings_count, &service->plans[i]);
@@ -74,5 +78,6 @@ size_t price_plan_service_recommend(struct price_plan_service *service, struct p
         results[i].plan = charges->plan;
         results[i].charge = charges[i].charge;
     }
+    free(charges);
     return count;
 }

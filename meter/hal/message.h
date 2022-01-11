@@ -17,7 +17,7 @@ struct message_head {
     char meter_id[METER_ID_LEN];
     uint32_t size;
     uint32_t type;
-    char payload[0];
+    char payload[4];
 };
 
 struct message {

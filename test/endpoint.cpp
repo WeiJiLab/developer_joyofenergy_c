@@ -60,9 +60,47 @@ TEST_F(EndpointTest, ShouldReadReading) {
     master_receive_message(response);
     ASSERT_EQ(response->head.type, MESSAGE_READINGS_READ);
     ASSERT_GT(response->head.size, sizeof(response->head));
-    struct reading_message_response *data = (struct reading_message_response *)response->payload;
+    struct reading_message_response *data = (struct reading_message_response *) response->payload;
     ASSERT_EQ(data->readings_count, 21);
     ASSERT_EQ(data->readings[0].power, 4000);
+}
+
+TEST_F(EndpointTest, DoubleMessagesTest) {
+    struct message msg = make_request(MESSAGE_READINGS_READ);
+    master_send_message(&msg);
+    master_send_message(&msg);
+
+    struct message *response = &msg;
+    master_receive_message(&msg);
+    struct reading_message_response *data = (struct reading_message_response *) response->payload;
+    ASSERT_EQ(data->readings_count, 21);
+    ASSERT_EQ(data->readings[20].power, 4000);
+
+    master_receive_message(&msg);
+    data = (struct reading_message_response *) response->payload;
+    ASSERT_EQ(data->readings_count, 21);
+    ASSERT_EQ(data->readings[20].power, 4000);
+}
+
+TEST_F(EndpointTest, MultipleMessagesTest) {
+    int i;
+    int result;
+    struct message msg = make_request(MESSAGE_READINGS_READ);
+    for (i = 0; i < 0x10; i++) {
+        result = master_send_message(&msg);
+        ASSERT_EQ(result, 0);
+    }
+    result = master_send_message(&msg);
+    ASSERT_NE(result, 0);
+
+    struct message *response = &msg;
+    for (i = 0; i < 0x10; i++) {
+        result = master_receive_message(&msg);
+        ASSERT_EQ(result, 0);
+        struct reading_message_response *data = (struct reading_message_response *) response->payload;
+        ASSERT_EQ(data->readings_count, 21);
+        ASSERT_EQ(data->readings[20].power, 4000);
+    }
 }
 
 TEST_F(EndpointTest, ShouldStoreReadingAfter15Minutes) {
@@ -75,7 +113,7 @@ TEST_F(EndpointTest, ShouldStoreReadingAfter15Minutes) {
 
     struct message *response = &msg;
     master_receive_message(&msg);
-    struct reading_message_response *data = (struct reading_message_response *)response->payload;
+    struct reading_message_response *data = (struct reading_message_response *) response->payload;
     ASSERT_EQ(data->readings_count, 22);
     ASSERT_EQ(data->readings[21].power, power);
     ASSERT_EQ(data->readings[21].at, mock.clock.now);
@@ -88,7 +126,7 @@ TEST_F(EndpointTest, ShouldCompareAllPricePlan) {
     struct message *response = &msg;
     master_receive_message(response);
     ASSERT_EQ(response->head.type, MESSAGE_PRICE_PLAN_COMPARE_ALL);
-    price_plan_compare_all_response *data = (price_plan_compare_all_response *)response->payload;
+    price_plan_compare_all_response *data = (price_plan_compare_all_response *) response->payload;
     ASSERT_EQ(data->plans_count, 3);
     ASSERT_STREQ(data->plans[0].plan, "price-plan-0");
     ASSERT_EQ(data->plans[0].charge, 40 * 100);
@@ -103,7 +141,7 @@ TEST_F(EndpointTest, ShouldRecommendPricePlan) {
     struct message *response = &msg;
     master_receive_message(response);
     ASSERT_EQ(response->head.type, MESSAGE_PRICE_PLAN_RECOMMEND);
-    price_plan_recommend_response *data = (price_plan_recommend_response *)response->payload;
+    price_plan_recommend_response *data = (price_plan_recommend_response *) response->payload;
     ASSERT_EQ(data->plans_count, recommend_request->limit);
     ASSERT_STREQ(data->plans[0].plan, "price-plan-2");
     ASSERT_EQ(data->plans[0].charge, 4 * 100);

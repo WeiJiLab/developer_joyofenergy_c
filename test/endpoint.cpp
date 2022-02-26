@@ -46,7 +46,7 @@ class EndpointTest : public ::testing::Test {
 
 message make_request(message_type requestType) {
     message req = {0};
-    memcpy(req.head.meter_id, METER_ID_3, METER_ID_LEN);
+    strncpy(req.head.meter_id, METER_ID_3, METER_ID_LEN);
     req.head.size = sizeof(req);
     req.head.type = requestType;
     return req;

@@ -23,6 +23,7 @@ class bus_controller {
     ~bus_controller() {
         destory_bus_message_queue(m2s_queue);
         destory_bus_message_queue(s2m_queue);
+        exit(0);
     }
 
     static bus_controller *get_instance() {

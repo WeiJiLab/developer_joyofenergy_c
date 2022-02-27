@@ -16,6 +16,7 @@ class bus_controller {
         assert(NULL != m2s_queue);
         s2m_queue = create_bus_message_queue(BC_MSG_CNT);
         assert(NULL != s2m_queue);
+        reg_start = true;
         task = std::thread(&bus_controller::bus_dispatch_to_slave_entity, this);
         task.detach();
     }
@@ -23,7 +24,9 @@ class bus_controller {
     ~bus_controller() {
         destory_bus_message_queue(m2s_queue);
         destory_bus_message_queue(s2m_queue);
-        exit(0);
+
+        reg_start = false;
+        m2scv.notify_all();
     }
 
     static bus_controller *get_instance() {
@@ -67,11 +70,11 @@ class bus_controller {
         struct iterator *iter;
 
         std::cout << "bc task start..." << std::endl;
-        while (1) {
+        while (reg_start) {
             std::unique_lock<std::mutex> sem(m2smtx);
             /* 1. producer & consumer sequence
-               2. spurious wakeups  */
-            while (queue_size(m2s_queue) <= 0) {
+               2. spurious wakeups */
+            while (reg_start && (queue_size(m2s_queue) <= 0)) {
                 m2scv.wait(sem);
             }
             iter = bus_message_queue_iterator(m2s_queue);
@@ -83,6 +86,7 @@ class bus_controller {
     }
 
   private:
+    bool reg_start = false;
     std::thread task;
     std::mutex s2mmtx;
     std::mutex m2smtx;

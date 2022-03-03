@@ -90,8 +90,6 @@ TEST_F(EndpointTest, MultipleMessagesTest) {
         result = master_send_message(&msg);
         ASSERT_EQ(result, 0);
     }
-    // result = master_send_message(&msg);
-    // ASSERT_NE(result, 0);
 
     struct message *response = &msg;
     for (i = 0; i < 0x10; i++) {

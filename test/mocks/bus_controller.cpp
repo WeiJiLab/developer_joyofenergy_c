@@ -24,9 +24,7 @@ class bus_controller {
     ~bus_controller() {
         destory_bus_message_queue(m2s_queue);
         destory_bus_message_queue(s2m_queue);
-
-        reg_start = false;
-        m2scv.notify_all();
+        thread_cancel();
     }
 
     static bus_controller *get_instance() {
@@ -65,18 +63,33 @@ class bus_controller {
     }
 
   private:
+    void thread_cancel(void) {
+        reg_start = false;
+        m2scv.notify_all();
+    }
+
+ #define TE_CHECKPOINT() \
+    do { \
+        if (false == reg_start) { \
+            std::cout << "task exit" << std::endl; \
+            return; \
+        } \
+    } while (0)
+
     void bus_dispatch_to_slave_entity(void) {
         struct message *msg;
         struct iterator *iter;
 
         std::cout << "bc task start..." << std::endl;
-        while (reg_start) {
+        while (1) {
             std::unique_lock<std::mutex> sem(m2smtx);
             /* 1. producer & consumer sequence
                2. spurious wakeups */
-            while (reg_start && (queue_size(m2s_queue) <= 0)) {
+            while (queue_size(m2s_queue) <= 0) {
+                TE_CHECKPOINT();
                 m2scv.wait(sem);
             }
+            TE_CHECKPOINT();
             iter = bus_message_queue_iterator(m2s_queue);
             while ((msg = (struct message *) iter->next((void *) m2s_queue)) != NULL) {
                 device_interrupt_proc(msg->head.meter_id);
